@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Wallet {
+  id Int @id @default(autoincrement())
+
+  telegramUserId      String @unique
+  encryptedPrivateKey String
+
+  orderlyKey    String?
+  orderlySecret String?
+
+  encryptedNearPrivateKey  String?
+  orderlyNearKey           String?
+  orderlyNearSecret        String?
+  orderlyNearTradingKey    String?
+  orderlyNearTradingSecret String?
+
+  messages ChatMessage[]
+}
+
+model ChatMessage {
+  id Int @id @default(autoincrement())
+
+  message  String
+  sentByAI Boolean
+
+  walletId Int
+  wallet   Wallet @relation(fields: [walletId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
